@@ -20,6 +20,7 @@ The sample shows how to scan documents to web browsers via IP address with Dynam
     - Linux, macOS and Raspberry Pi OS: /opt/dynamsoft/DynamsoftService/DSConfiguration.ini
       
       ![Linux remote scan configuration](https://www.dynamsoft.com/codepool/wp-content/uploads/2020/08/linux-remote-scan-configuration.png)
+3. Copy `Dynamic Web TWAIN SDK <version number>/Resources` folder to the project directory.
 
 ## How to Make the Sample Work
 1. Update the IP address according to your configuration:
