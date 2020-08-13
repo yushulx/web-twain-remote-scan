@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dynamic Web TWAIN: Remote Scanner Control</title>
+    <script type="text/javascript" src="Resources/dynamsoft.webtwain.initiate.js"></script>
+    <script type="text/javascript" src="Resources/dynamsoft.webtwain.config.js"></script>
+</head>
+
+<body>
+    <select size="1" id="remote" style="position: relative; width: 220px;">
+        <option>192.168.8.84</option>
+        <option>192.168.8.85</option>
+    </select>
+    <select size="1" id="source" style="position: relative; width: 220px;"></select>
+    <input type="button" value="Scan" onclick="acquireImage();" />
+    <div id="doc-image"></div>
+
+    <script type="text/javascript">
+        Dynamsoft.WebTwainEnv.AutoLoad = false;
+        // Get a free trial license key from https://www.dynamsoft.com/CustomerPortal/Portal/Triallicense.aspx
+        Dynamsoft.WebTwainEnv.ProductKey = 'LICENSE-KEY';
+        var DWObject;
+        var selectSource = document.getElementById('source');
+
+        function init(ip) {
+            // Dynamsoft.Lib.detect.arySTwainsByIP = [];
+            var dwtConfig={WebTwainId: ip, Host: ip}; 
+            // Dynamsoft.dcp.host = ip;
+            Dynamsoft.WebTwainEnv.CreateDWTObjectEx(dwtConfig, function (obj) {
+                    DWObject = obj;
+                    DWObject.BindViewer('doc-image');
+                    DWObject.Width=300;
+                    DWObject.Height=300;
+                    DWObject.IfShowUI = false;
+                    var count = DWObject.SourceCount;
+                    // remove previous options
+                    for (var i=0; i< selectSource.length; i++) {
+                        selectSource.remove(i);
+                    }
+
+                    for (var i = 0; i < count; i++)
+                        selectSource.options.add(new Option(DWObject.GetSourceNameItems(i), i));
+
+                }, function (errorString) {
+                    console.log(errorString)
+                });
+
+        }
+        
+        function acquireImage() {
+            if (DWObject) {
+                var onSuccess, onFailure;
+                onSuccess = onFailure = function () {
+                    DWObject.CloseSource();
+                };
+
+                DWObject.SelectSourceByIndex(document.getElementById('source').selectedIndex); 
+                DWObject.OpenSource();
+                DWObject.IfDisableSourceAfterAcquire = true;	
+                DWObject.AcquireImage(onSuccess, onFailure);
+            }
+        }
+
+        var ip = document.getElementById('remote');
+        ip.onchange = function() {
+            init(ip.value);
+        }
+        init(ip.value);
+    </script>
+</body>
+
+</html>
